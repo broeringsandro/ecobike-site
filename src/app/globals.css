@@ -133,6 +133,16 @@ body {
     float 5s ease-in-out 1.8s infinite;
 }
 
+/* Hero image position — center on mobile, offset on desktop */
+.hero-img {
+  object-position: center center;
+}
+@media (min-width: 768px) {
+  .hero-img {
+    object-position: 20% center;
+  }
+}
+
 /* Glassmorphism */
 .glass-dark {
   background: rgba(17,17,17,0.85);

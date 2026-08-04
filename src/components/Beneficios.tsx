@@ -12,7 +12,7 @@ const tags = [
 
 export default function Beneficios() {
   return (
-    <section id="beneficios" className="py-12 md:py-20 px-5 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
+    <section id="beneficios" className="pt-12 pb-6 md:py-20 px-5 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
