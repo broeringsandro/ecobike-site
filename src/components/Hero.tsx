@@ -39,7 +39,8 @@ export default function Hero() {
           alt="Scooter elétrica EcoBike"
           fill
           priority
-          className="object-cover animate-hero-scale hero-img"
+          className="object-cover animate-hero-scale"
+          style={{ objectPosition: "20% center" }}
           quality={90}
         />
 
