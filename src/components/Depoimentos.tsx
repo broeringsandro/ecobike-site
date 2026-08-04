@@ -61,12 +61,12 @@ export default function Depoimentos() {
   return (
     <section
       id="depoimentos"
-      className="py-20 px-8 md:px-14 lg:px-20"
+      className="py-12 md:py-20 px-5 md:px-14 lg:px-20"
       style={{ backgroundColor: "#111111" }}
     >
       <div className="max-w-6xl mx-auto">
 
-        <Reveal className="mb-14">
+        <Reveal className="mb-8 md:mb-14">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <p className="text-[11px] font-semibold text-white/40 tracking-[3px] uppercase mb-4 font-body">

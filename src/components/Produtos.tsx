@@ -101,9 +101,9 @@ function ProdutoCard({ p, large = false, cover = false }: { p: Produto; large?: 
 
 export default function Produtos() {
   return (
-    <section id="produtos" className="py-24 px-8 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
+    <section id="produtos" className="py-14 md:py-24 px-5 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
       <div className="max-w-7xl mx-auto">
-        <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <Reveal className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
           <div>
             <p className="text-[11px] font-semibold text-[#111]/40 tracking-[3.5px] uppercase mb-4 font-body">
               Catálogo 2026

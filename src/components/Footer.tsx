@@ -19,7 +19,7 @@ const unidades = [
 export default function Footer() {
   return (
     <>
-      <footer className="bg-[#0a0a0a] border-t border-white/[0.06] pt-16 pb-10 px-8 md:px-14 lg:px-20">
+      <footer className="bg-[#0a0a0a] border-t border-white/[0.06] pt-12 md:pt-16 pb-8 md:pb-10 px-5 md:px-14 lg:px-20">
         <div className="max-w-6xl mx-auto">
 
           {/* Top row */}

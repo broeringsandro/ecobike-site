@@ -24,9 +24,9 @@ const unidades = [
 
 export default function Unidades() {
   return (
-    <section id="unidades" className="py-24 px-8 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
+    <section id="unidades" className="py-14 md:py-24 px-5 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
       <div className="max-w-5xl mx-auto">
-        <Reveal className="mb-14">
+        <Reveal className="mb-8 md:mb-14">
           <p className="text-[11px] font-semibold text-[#666] tracking-[3.5px] uppercase mb-4 font-body">
             Nossas lojas
           </p>

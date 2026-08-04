@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Reveal from "./Reveal";
 
@@ -31,13 +31,26 @@ const items = [
   },
 ];
 
-const VISIBLE = 3;
-
 export default function Diferenciais() {
   const [start, setStart] = useState(0);
+  const [visible, setVisible] = useState(3);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      setVisible(w < 640 ? 1 : w < 1024 ? 2 : 3);
+    };
+    update();
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    setStart((s) => Math.min(s, Math.max(0, items.length - visible)));
+  }, [visible]);
 
   const prev = () => setStart((i) => Math.max(0, i - 1));
-  const next = () => setStart((i) => Math.min(items.length - VISIBLE, i + 1));
+  const next = () => setStart((i) => Math.min(items.length - visible, i + 1));
 
   return (
     <section
@@ -80,14 +93,14 @@ export default function Diferenciais() {
           <div className="overflow-hidden mb-6">
             <div
               className="flex gap-4 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
-              style={{ transform: `translateX(calc(-${start} * (100% / ${VISIBLE} + 16px / ${VISIBLE})))` }}
+              style={{ transform: `translateX(calc(-${start} * (100% / ${visible} + 16px / ${visible})))` }}
             >
               {items.map((item, i) => (
                 <div
                   key={i}
                   className="shrink-0 rounded-2xl p-6 flex flex-col gap-3 border border-white/10 hover:border-white/25 transition-all duration-300"
                   style={{
-                    width: `calc(${100 / VISIBLE}% - ${(VISIBLE - 1) * 16 / VISIBLE}px)`,
+                    width: `calc(${100 / visible}% - ${(visible - 1) * 16 / visible}px)`,
                     backgroundColor: "rgba(255,255,255,0.08)",
                     backdropFilter: "blur(12px)",
                   }}
@@ -121,7 +134,7 @@ export default function Diferenciais() {
               </button>
               <button
                 onClick={next}
-                disabled={start >= items.length - VISIBLE}
+                disabled={start >= items.length - visible}
                 aria-label="Próximo"
                 className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-colors disabled:opacity-30"
               >

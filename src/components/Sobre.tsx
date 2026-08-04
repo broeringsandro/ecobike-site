@@ -15,12 +15,12 @@ const skills = [
 
 export default function Sobre() {
   return (
-    <section id="sobre" className="py-20 px-8 md:px-14 lg:px-20 bg-white">
+    <section id="sobre" className="py-12 md:py-20 px-5 md:px-14 lg:px-20 bg-white">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
         {/* Left — photos */}
         <Reveal direction="scale">
-          <div className="flex flex-col gap-3" style={{ height: 460 }}>
+          <div className="flex flex-col gap-3" style={{ height: "clamp(280px, 45vw, 460px)" }}>
             {/* Top: tall store photo */}
             <div className="relative rounded-2xl overflow-hidden flex-1 group">
               <Image

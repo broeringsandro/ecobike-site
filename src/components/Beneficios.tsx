@@ -12,7 +12,7 @@ const tags = [
 
 export default function Beneficios() {
   return (
-    <section id="beneficios" className="py-20 px-8 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
+    <section id="beneficios" className="py-12 md:py-20 px-5 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
@@ -29,7 +29,7 @@ export default function Beneficios() {
 
             {/* Dark CTA card */}
             <Reveal>
-              <div className="rounded-2xl p-7 flex items-end justify-between gap-4 max-w-[360px]" style={{ backgroundColor: "#111" }}>
+              <div className="rounded-2xl p-6 md:p-7 flex items-end justify-between gap-4 w-full sm:max-w-[360px]" style={{ backgroundColor: "#111" }}>
                 <div>
                   <p className="text-white font-extrabold text-[clamp(22px,2.5vw,32px)] font-heading leading-[1.1] tracking-[-0.03em]">
                     Faça seu<br />

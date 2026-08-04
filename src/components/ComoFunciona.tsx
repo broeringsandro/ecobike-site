@@ -25,7 +25,7 @@ const passos = [
 
 export default function ComoFunciona() {
   return (
-    <section id="como-funciona" className="py-24 px-8 md:px-14 lg:px-20 bg-white">
+    <section id="como-funciona" className="py-14 md:py-24 px-5 md:px-14 lg:px-20 bg-white">
       <div className="max-w-6xl mx-auto">
 
         <Reveal className="mb-16">
@@ -37,7 +37,7 @@ export default function ComoFunciona() {
           </h2>
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-0">
           {passos.map((p, i) => (
             <Reveal key={i} delay={i * 90}>
               <div className="py-10 border-b border-[#f0f0ee] flex items-start gap-6">

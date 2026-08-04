@@ -40,12 +40,12 @@ const items = [
 
 export default function FAQ() {
   return (
-    <section id="faq" className="py-24 px-8 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
+    <section id="faq" className="py-14 md:py-24 px-5 md:px-14 lg:px-20" style={{ backgroundColor: "#efefed" }}>
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-10 items-start">
 
           {/* Left column — plain div so flex+sticky work correctly */}
-          <div className="flex flex-col justify-between gap-8 lg:sticky lg:top-24" style={{ minHeight: 520 }}>
+          <div className="flex flex-col justify-between gap-8 lg:sticky lg:top-24 lg:min-h-[520px]">
 
             {/* Top: tag + headline + description */}
             <Reveal direction="left" className="flex flex-col gap-5">
