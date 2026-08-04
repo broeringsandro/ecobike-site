@@ -15,7 +15,7 @@ export default function Hero() {
       >
         {/* Floating product card — top left, hidden on mobile */}
         <div
-          className="hidden md:block absolute top-8 left-8 md:top-12 md:left-12 z-10 rounded-2xl p-4 max-w-[240px] animate-hero-card"
+          className="absolute top-8 left-8 md:top-12 md:left-12 z-10 rounded-2xl p-4 max-w-[200px] md:max-w-[240px] animate-hero-card"
           style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.18)" }}
         >
           <div className="flex items-center justify-between mb-2">
