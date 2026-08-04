@@ -40,7 +40,7 @@ export default function Hero() {
           fill
           priority
           className="object-cover animate-hero-scale"
-          style={{ objectPosition: "20% center" }}
+          style={{ objectPosition: "30% center" }}
           quality={90}
         />
 
