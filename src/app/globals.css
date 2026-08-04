@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-heading: var(--font-manrope), "Manrope", system-ui, sans-serif;
+  --font-body: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+  --color-yellow: #F9E924;
+  --color-dark: #111111;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+* { box-sizing: border-box; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+  background-color: #efefed;
+  color: #111111;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* Utility shorthands */
+.font-heading { font-family: var(--font-manrope), "Manrope", system-ui, sans-serif; }
+.font-body    { font-family: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif; }
+
+/* Animations */
+@keyframes heroScale {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1.00); }
+}
+
+.animate-hero-scale {
+  animation: heroScale 7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes scrollDot {
+  0%   { transform: translateY(0);    opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(249,233,36,0.5); }
+  50%       { box-shadow: 0 0 0 14px rgba(249,233,36,0);  }
+}
+
+.animate-scroll-dot { animation: scrollDot 1.5s ease-in-out infinite; }
+.animate-marquee    { animation: marquee  30s linear       infinite; }
+.animate-pulse-glow { animation: pulse-glow 2.2s ease-in-out infinite; }
+
+/* Scroll reveal — up (default) */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.85s cubic-bezier(0.22,1,0.36,1), transform 0.85s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Scroll reveal — fade only */
+.reveal-fade { opacity: 0; transition: opacity 0.9s ease; }
+.reveal-fade.visible { opacity: 1; }
+
+/* Scroll reveal — from left */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-44px);
+  transition: opacity 0.85s cubic-bezier(0.22,1,0.36,1), transform 0.85s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+/* Scroll reveal — from right */
+.reveal-right {
+  opacity: 0;
+  transform: translateX(44px);
+  transition: opacity 0.85s cubic-bezier(0.22,1,0.36,1), transform 0.85s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* Scroll reveal — scale up */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.88) translateY(20px);
+  transition: opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-scale.visible { opacity: 1; transform: scale(1) translateY(0); }
+
+/* Above-fold Hero entrance animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInOnly {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes heroCardEntrance {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0px); }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.95s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+.animate-fade-in-only {
+  opacity: 0;
+  animation: fadeInOnly 0.8s ease both;
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Hero floating card: entrance then float */
+.animate-hero-card {
+  opacity: 0;
+  animation:
+    heroCardEntrance 0.9s cubic-bezier(0.22,1,0.36,1) 0.8s both,
+    float 5s ease-in-out 1.8s infinite;
+}
+
+/* Glassmorphism */
+.glass-dark {
+  background: rgba(17,17,17,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.glass-light {
+  background: rgba(239,239,237,0.90);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
