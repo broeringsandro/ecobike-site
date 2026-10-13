@@ -1,145 +1,85 @@
 import Image from "next/image";
-import Reveal from "./Reveal";
+import { Star, CircleCheck } from "lucide-react";
+import { WA_LOJA } from "@/lib/constants";
+import Button from "./Button";
 
-const WA =
-  "https://wa.me/5548984558493?text=Ol%C3%A1!%20Quero%20visitar%20uma%20loja%20EcoBike.";
-
-const skills = [
-  "Garantia Oficial",
-  "Assistência Técnica",
-  "Test Ride",
-  "Entrega",
-  "Financiamento",
-  "Peças Originais",
-];
+const skills = ["Garantia oficial", "Assistência técnica", "Test ride", "Entrega", "Financiamento", "Peças originais"];
 
 export default function Sobre() {
   return (
-    <section id="sobre" className="py-12 md:py-20 px-5 md:px-14 lg:px-20 bg-white">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
-        {/* Left — photos */}
-        <Reveal direction="scale">
-          <div className="flex flex-col gap-3" style={{ height: "clamp(280px, 45vw, 460px)" }}>
-            {/* Top: tall store photo */}
-            <div className="relative rounded-2xl overflow-hidden flex-1 group">
-              <Image
-                src="/loja2.jpg"
-                alt="Loja EcoBike"
-                fill
-                className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-                quality={85}
-              />
-            </div>
-
-            {/* Bottom row: stat card + bike photo */}
-            <div className="flex gap-3 shrink-0" style={{ height: 170 }}>
-              <div
-                className="rounded-2xl flex flex-col justify-center p-6 shrink-0 w-[42%]"
-                style={{ backgroundColor: "#F9E924" }}
-              >
-                <div className="text-[40px] font-black text-[#111] leading-none font-heading tracking-[-0.04em]">
-                  200+
-                </div>
-                <div className="text-[12px] font-semibold text-[#111]/55 mt-1.5 font-body leading-snug">
-                  Clientes satisfeitos em SC
-                </div>
-              </div>
-              <div className="relative rounded-2xl overflow-hidden flex-1 group">
-                <Image
-                  src="/sobre-moto.png"
-                  alt="Scooter EcoBike"
-                  fill
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
-                  quality={85}
-                />
-              </div>
+    <section id="sobre" className="relative z-10 -mt-10 rounded-t-[40px] bg-ink px-5 py-24 md:-mt-16 md:rounded-t-[64px] md:px-10 md:py-40">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-16 lg:grid-cols-12">
+        {/* Collage */}
+        <div className="relative lg:col-span-7">
+          <div data-reveal="clip" className="relative aspect-[4/3] overflow-hidden rounded-[28px]">
+            <div data-parallax="-14" className="absolute -inset-y-[10%] inset-x-0">
+              <Image src="/loja2.jpg" alt="Fachada da loja EcoBike com scooters elétricas" fill sizes="(max-width: 1024px) 100vw, 58vw" className="object-cover object-top" />
             </div>
           </div>
-        </Reveal>
 
-        {/* Right — content */}
-        <Reveal direction="right" delay={150}>
-          {/* Eyebrow */}
-          <div className="flex items-center gap-2 mb-5">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: "#F9E924" }} aria-hidden="true" />
-            <p className="text-[11px] font-semibold text-[#666] tracking-[3px] uppercase font-body">
-              Sobre a EcoBike
-            </p>
+          <div
+            data-reveal="up"
+            data-delay="0.2"
+            className="absolute -bottom-10 right-4 w-[38%] overflow-hidden rounded-[22px] border-[6px] border-ink md:-bottom-14 md:right-8"
+          >
+            <div className="relative aspect-[3/4]">
+              <Image src="/loja.jpg" alt="Interior da loja EcoBike" fill sizes="25vw" className="object-cover" />
+            </div>
           </div>
 
-          {/* Headline */}
-          <h2 className="text-[clamp(26px,3.2vw,44px)] font-extrabold text-[#111] tracking-[-0.04em] leading-[1.1] mb-5 font-heading">
+          <div
+            data-reveal="scale"
+            data-delay="0.35"
+            className="absolute -top-6 left-4 flex flex-col rounded-[22px] bg-yellow p-5 text-ink shadow-2xl md:left-8 md:p-6"
+          >
+            <span className="font-heading text-[clamp(40px,4vw,60px)] font-extrabold leading-none tracking-[-0.05em]">
+              <span data-count="200" data-suffix="+">200+</span>
+            </span>
+            <span className="mt-1 font-body text-[12px] font-semibold text-ink/60">Clientes satisfeitos em SC</span>
+          </div>
+        </div>
+
+        {/* Text */}
+        <div className="mt-8 lg:col-span-5 lg:mt-0">
+          <p data-reveal="fade" className="mb-8 flex items-center gap-3 font-body text-[12px] font-semibold uppercase tracking-[0.25em] text-bone/40">
+            <span className="text-yellow">(05)</span> Sobre a EcoBike
+          </p>
+          <h2
+            data-split
+            className="font-heading font-extrabold leading-[0.95] tracking-[-0.05em] text-bone"
+            style={{ fontSize: "clamp(38px, 4.2vw, 68px)" }}
+          >
             Especialistas em mobilidade elétrica em Santa Catarina.
           </h2>
-
-          {/* Description */}
-          <p className="text-[15px] text-[#555] leading-[1.8] mb-8 font-body">
-            A EcoBike nasceu para tornar a mobilidade urbana mais econômica, sustentável e prática.
-            Com duas unidades em SC, oferece scooters e bicicletas elétricas com assistência técnica
-            especializada e atendimento completo.
+          <p data-reveal="up" className="mt-8 font-body text-[16px] leading-relaxed text-bone/60">
+            A EcoBike nasceu para tornar a mobilidade urbana mais econômica, sustentável e prática. Com duas lojas em SC,
+            oferece scooters e bicicletas elétricas com assistência técnica especializada e atendimento completo.
           </p>
 
-          {/* CTA + team */}
-          <div className="flex items-center gap-5 mb-10">
-            <a
-              href={WA}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#111] text-white font-semibold text-[13px] px-6 py-3 rounded-full hover:bg-[#333] transition-colors font-body"
-            >
+          <div data-reveal="up" className="mt-8 flex items-center gap-4 border-y border-white/[0.07] py-6">
+            <div className="flex gap-1 text-yellow">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Star key={i} size={18} fill="currentColor" strokeWidth={0} />
+              ))}
+            </div>
+            <p className="font-body text-[14px] text-bone/60">Avaliação 5 estrelas dos nossos clientes</p>
+          </div>
+
+          <ul data-reveal="up" className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3">
+            {skills.map((s) => (
+              <li key={s} className="flex items-center gap-2.5 font-body text-[14px] text-bone/80">
+                <CircleCheck size={18} strokeWidth={1.75} className="shrink-0 text-yellow" />
+                {s}
+              </li>
+            ))}
+          </ul>
+
+          <div data-reveal="up" className="mt-10">
+            <Button href={WA_LOJA} external>
               Visitar a loja
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path d="M5 2l5 5-5 5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </a>
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-[#F9E924] flex items-center justify-center text-[#111] font-bold text-sm font-body shrink-0">
-                E
-              </div>
-              <div>
-                <div className="text-[13px] font-semibold text-[#111] font-body leading-tight">Equipe EcoBike</div>
-                <div className="text-[11px] text-[#888] font-body">Palhoça & Santo Amaro · SC</div>
-              </div>
-            </div>
+            </Button>
           </div>
-
-          {/* Divider */}
-          <div className="border-t border-[#f0f0ee] pt-8 grid grid-cols-2 gap-8">
-            {/* Rating */}
-            <div>
-              <div className="flex gap-0.5 mb-2">
-                {[1,2,3,4,5].map((i) => (
-                  <svg key={i} width="14" height="14" viewBox="0 0 14 14" fill="#F9E924" aria-hidden="true">
-                    <path d="M7 1l1.545 4.146H13L9.637 7.854l1.545 4.146L7 9.5 2.818 12l1.545-4.146L1 5.146h4.455z"/>
-                  </svg>
-                ))}
-              </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-[32px] font-black text-[#111] font-heading leading-none tracking-[-0.04em]">4.9</span>
-                <span className="text-[14px] text-[#aaa] font-body">/5.0</span>
-              </div>
-              <div className="text-[11px] text-[#888] font-body mt-1">Avaliação dos clientes</div>
-            </div>
-
-            {/* Services */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-semibold text-[#888] uppercase tracking-[1.5px] font-body">Nossos serviços</span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M4 12L12 4M12 4H6M12 4v6" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {skills.map((s) => (
-                  <span key={s} className="text-[11px] font-medium text-[#555] bg-[#f5f5f3] px-2.5 py-1 rounded-full font-body">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

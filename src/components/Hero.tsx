@@ -1,133 +1,207 @@
-import Image from "next/image";
+"use client";
 
-const WA =
-  "https://wa.me/5548984558493?text=Ol%C3%A1!%20Gostaria%20de%20agendar%20um%20Test%20Ride%20na%20EcoBike.";
+import { useRef } from "react";
+import Image from "next/image";
+import { ArrowDown, Gauge, IdCard, CreditCard, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { gsap, SplitText, useGSAP } from "@/lib/gsap";
+import { WA_RIDE } from "@/lib/constants";
+import Button from "./Button";
+
+const specs = [
+  { icon: IdCard, label: "Sem CNH", sub: "100% autopropelido" },
+  { icon: Gauge, label: "Até 60 km", sub: "por carga" },
+  { icon: CreditCard, label: "Até 24×", sub: "sem burocracia" },
+  { icon: ShieldCheck, label: "1 ano", sub: "de garantia oficial" },
+];
 
 export default function Hero() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const q = gsap.utils.selector(root);
+
+      if (reduce) {
+        gsap.set(q("[data-curtain]"), { display: "none" });
+        gsap.set(q("[data-hero-title]"), { visibility: "visible" });
+        return;
+      }
+
+      const split = SplitText.create(q("[data-hero-title]"), { type: "chars,lines", mask: "lines" });
+      gsap.set(q("[data-hero-title]"), { visibility: "visible" });
+
+      const counter = { v: 0 };
+      const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+      tl.from(q("[data-curtain-logo]"), { yPercent: 120, duration: 0.9 })
+        .to(
+          counter,
+          {
+            v: 100,
+            duration: 0.9,
+            ease: "power2.inOut",
+            onUpdate: () => {
+              const el = q("[data-curtain-count]")[0];
+              if (el) el.textContent = String(Math.round(counter.v)).padStart(3, "0");
+            },
+          },
+          0
+        )
+        .to(q("[data-curtain-bar]"), { scaleX: 1, duration: 0.9, ease: "power2.inOut" }, 0)
+        .to(q("[data-curtain]"), { yPercent: -100, duration: 1.1, ease: "expo.inOut" }, 1.05)
+        .from(q("[data-hero-img]"), { scale: 1.35, duration: 2.2, ease: "expo.out" }, 1.3)
+        .from(split.chars, { yPercent: 115, duration: 1.2, stagger: 0.025 }, 1.55)
+        .from(q("[data-hero-fade]"), { y: 30, opacity: 0, duration: 1, stagger: 0.08 }, 1.85)
+        .from(q("[data-hero-spec]"), { y: 40, opacity: 0, duration: 1, stagger: 0.07 }, 2.0)
+        .from(q("[data-hero-card]"), { x: 60, opacity: 0, rotate: 6, duration: 1.3 }, 2.1)
+        .set(q("[data-curtain]"), { display: "none" });
+
+      // Floating highlight card
+      gsap.to(q("[data-hero-card-inner]"), { y: -12, duration: 3, ease: "sine.inOut", yoyo: true, repeat: -1 });
+
+      // Scroll: frame shrinks into a rounded card, image zooms, content lifts away
+      const st = {
+        trigger: root.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      };
+      gsap.to(q("[data-hero-frame]"), { clipPath: "inset(6% 3% 0% 3% round 32px)", ease: "none", scrollTrigger: st });
+      gsap.to(q("[data-hero-img-wrap]"), { scale: 1.18, yPercent: 12, ease: "none", scrollTrigger: st });
+      gsap.to(q("[data-hero-content]"), { yPercent: -35, opacity: 0, ease: "none", scrollTrigger: { ...st, end: "70% top" } });
+
+      return () => split.revert();
+    },
+    { scope: root }
+  );
+
   return (
-    <section
-      className="min-h-screen flex flex-col px-4 pb-4"
-      style={{ backgroundColor: "#efefed", paddingTop: 68 }}
-    >
-      <div
-        className="flex-1 rounded-[28px] overflow-hidden relative"
-        style={{ minHeight: "calc(100vh - 84px)" }}
-      >
-        {/* Floating product card — top left, hidden on mobile */}
-        <div
-          className="absolute top-8 left-8 md:top-12 md:left-12 z-10 rounded-2xl p-4 max-w-[200px] md:max-w-[240px] animate-hero-card"
-          style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.18)" }}
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white/80 text-[11px] font-semibold font-body uppercase tracking-widest">
-              Destaque
-            </span>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M2 10L10 2M10 2H4M10 2v6" stroke="white" strokeOpacity="0.6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+    <section ref={root} id="top" className="relative h-[100svh] min-h-[640px] w-full overflow-hidden bg-ink">
+      {/* Intro curtain */}
+      <div data-curtain className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-yellow text-ink">
+        <div className="overflow-hidden">
+          <div data-curtain-logo className="flex items-center gap-4">
+            <Image src="/logo.svg" alt="" width={220} height={69} className="h-12 w-auto invert md:h-16" preload />
           </div>
-          <p className="text-white font-heading font-bold text-[15px] leading-tight mb-1">
-            Scooter S5 Pro
-          </p>
-          <p className="text-white/60 text-[12px] font-body leading-relaxed">
-            Até 80 km de autonomia, carregamento rápido e sem necessidade de CNH.
-          </p>
         </div>
-        {/* Background image */}
-        <Image
-          src="/hero03.jpg"
-          alt="Scooter elétrica EcoBike"
-          fill
-          priority
-          className="hidden md:block object-cover animate-hero-scale"
-          style={{ objectPosition: "20% center" }}
-          quality={90}
-        />
-        {/* Background image — mobile */}
-        <Image
-          src="/hero-mobile.jpg"
-          alt="Scooter elétrica EcoBike"
-          fill
-          priority
-          className="md:hidden object-cover animate-hero-scale"
-          style={{ objectPosition: "center center" }}
-          quality={90}
-        />
+        <div className="absolute bottom-8 left-5 right-5 flex items-end justify-between md:left-10 md:right-10">
+          <span className="font-body text-[12px] font-semibold uppercase tracking-[0.25em]">Mobilidade elétrica</span>
+          <span data-curtain-count className="font-heading text-[56px] font-extrabold leading-none tracking-[-0.05em] tabular-nums md:text-[88px]">
+            000
+          </span>
+        </div>
+        <div data-curtain-bar className="absolute bottom-0 left-0 h-1.5 w-full origin-left scale-x-0 bg-ink" />
+      </div>
 
-        {/* Bottom gradient for text legibility */}
-        <div
-          className="absolute inset-0 z-[1]"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 45%, transparent 70%)",
-          }}
-        />
+      {/* Image frame */}
+      <div data-hero-frame className="absolute inset-0 overflow-hidden" style={{ clipPath: "inset(0% 0% 0% 0% round 0px)" }}>
+        <div data-hero-img-wrap className="absolute inset-0 origin-bottom">
+          <div data-hero-img className="absolute inset-0">
+            <Image
+              src="/hero03.jpg"
+              alt="Scooter elétrica EcoBike em estúdio"
+              fill
+              loading="eager"
+              fetchPriority="high"
+              sizes="100vw"
+              quality={85}
+              className="hidden object-cover md:block"
+              style={{ objectPosition: "20% center" }}
+            />
+            <Image
+              src="/hero-mobile.jpg"
+              alt="Scooter elétrica EcoBike em estúdio"
+              fill
+              loading="eager"
+              fetchPriority="high"
+              sizes="100vw"
+              quality={85}
+              className="object-cover md:hidden"
+              style={{ objectPosition: "28% center" }}
+            />
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(10,10,10,0.95)_0%,rgba(10,10,10,0.35)_45%,rgba(10,10,10,0.1)_70%,rgba(10,10,10,0.55)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(249,233,36,0.10),transparent_55%)]" />
+      </div>
 
-        {/* Bottom content */}
-        <div
-          className="absolute bottom-0 left-0 right-0 z-10 flex items-end justify-between p-8 md:p-12 gap-8"
+      {/* Content */}
+      <div data-hero-content className="relative z-10 mx-auto flex h-full max-w-[1440px] flex-col justify-end px-5 pb-8 pt-28 md:px-10 md:pb-10">
+        {/* Floating highlight card */}
+        <a
+          href="#produtos"
+          data-hero-card
+          className="absolute right-10 top-[22%] hidden w-[250px] lg:block"
+          aria-label="Ver Scooter X12"
         >
-          {/* Left — badge + headline + CTA */}
-          <div className="flex flex-col gap-5">
-            <span
-              className="inline-flex items-center gap-2 text-white/80 text-[12px] font-semibold font-body animate-fade-up"
-              style={{ animationDelay: "200ms" }}
-            >
-              <span
-                className="inline-block w-[6px] h-[6px] rounded-full"
-                style={{ backgroundColor: "#F9E924" }}
-              />
-              Mobilidade Elétrica Urbana
-            </span>
-
-            <h1
-              className="font-heading font-black text-white leading-[0.9] tracking-[-0.04em] animate-fade-up"
-              style={{ fontSize: "clamp(48px, 7.5vw, 110px)", animationDelay: "380ms" }}
-            >
-              <span className="block">Liberdade</span>
-              <span className="block">sem CNH.</span>
-            </h1>
-
-            <a
-              href="#produtos"
-              className="inline-flex items-center gap-2.5 self-start bg-white text-[#111] font-semibold text-[13px] px-7 py-3.5 rounded-full hover:bg-[#F9E924] transition-colors font-body animate-fade-up"
-              style={{ animationDelay: "560ms" }}
-            >
-              Ver modelos
-              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-                <path
-                  d="M2 5.5h7M5.5 2l3.5 3.5L5.5 9"
-                  stroke="#111"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
-          </div>
-
-          {/* Right — description + test ride */}
-          <div
-            className="hidden md:flex flex-col gap-4 items-end max-w-[280px] pb-1 animate-fade-up"
-            style={{ animationDelay: "680ms" }}
-          >
-            <div className="flex items-start gap-2">
-              <p className="text-white/70 text-[14px] font-body leading-relaxed text-right">
-                Scooters e bikes elétricas com garantia oficial, assistência própria e test ride gratuito.
-              </p>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0 mt-0.5" aria-hidden="true">
-                <path d="M2 12L12 2M12 2H5M12 2v7" stroke="white" strokeOpacity="0.5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          <div data-hero-card-inner className="group rounded-3xl border border-white/10 bg-white/[0.06] p-3 backdrop-blur-xl transition-colors hover:border-yellow/40">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-white">
+              <Image src="/produtos/x12.png" alt="Scooter X12" fill sizes="250px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+              <span className="absolute left-2.5 top-2.5 rounded-full bg-ink px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-yellow font-body">
+                Destaque
+              </span>
             </div>
-            <a
-              href={WA}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#F9E924] text-[#111] font-semibold text-[13px] px-5 py-2.5 rounded-full hover:brightness-95 transition-all font-body"
-            >
-              Agendar Test Ride grátis →
-            </a>
+            <div className="flex items-center justify-between px-1.5 pb-1 pt-3">
+              <div>
+                <p className="font-heading text-[15px] font-bold tracking-[-0.02em] text-bone">Scooter X12</p>
+                <p className="font-body text-[12px] text-bone/50">24× de R$ 458</p>
+              </div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow text-ink transition-transform duration-500 group-hover:rotate-45">
+                <ArrowUpRight size={18} />
+              </span>
+            </div>
           </div>
+        </a>
+
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-[900px]">
+            <p data-hero-fade className="mb-5 inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-bone/80 backdrop-blur font-body">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-yellow" />
+              </span>
+              Palhoça &amp; Santo Amaro, SC
+            </p>
+            <h1
+              data-hero-title
+              className="invisible font-heading font-extrabold leading-[0.88] tracking-[-0.055em] text-bone"
+              style={{ fontSize: "clamp(56px, 11vw, 176px)" }}
+            >
+              Liberdade
+              <br />
+              sem CNH<span className="text-yellow">.</span>
+            </h1>
+          </div>
+
+          <div className="flex max-w-[360px] flex-col gap-6 lg:items-end lg:pb-3 lg:text-right">
+            <p data-hero-fade className="font-body text-[15px] leading-relaxed text-bone/70 md:text-[16px]">
+              Scooters e bikes elétricas com garantia oficial, assistência técnica própria e test ride gratuito.
+            </p>
+            <div data-hero-fade className="flex flex-wrap gap-3 lg:justify-end">
+              <Button href="#produtos" variant="light" icon={<ArrowDown size={18} />}>
+                Ver modelos
+              </Button>
+              <Button href={WA_RIDE} external>
+                Test ride grátis
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Spec strip */}
+        <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-4">
+          {specs.map(({ icon: Icon, label, sub }) => (
+            <div key={label} data-hero-spec className="flex items-center gap-3 bg-ink/70 px-4 py-4 backdrop-blur-md md:px-6 md:py-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-yellow/10 text-yellow">
+                <Icon size={20} strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0">
+                <p className="font-heading text-[15px] font-bold leading-tight tracking-[-0.02em] text-bone md:text-[17px]">{label}</p>
+                <p className="truncate font-body text-[12px] text-bone/45">{sub}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

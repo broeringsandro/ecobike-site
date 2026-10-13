@@ -1,68 +1,103 @@
-import Reveal from "./Reveal";
+"use client";
+
+import { useRef } from "react";
+import Image from "next/image";
+import { Bike, CalendarCheck, Headset, Truck } from "lucide-react";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { WA_RIDE } from "@/lib/constants";
+import Button from "./Button";
 
 const passos = [
-  {
-    num: "01",
-    title: "Escolha seu modelo.",
-    body: "Explore nosso catálogo e encontre a scooter ideal para o seu estilo de vida e orçamento.",
-  },
-  {
-    num: "02",
-    title: "Agende um Test Ride.",
-    body: "Venha até uma de nossas lojas e experimente gratuitamente antes de decidir.",
-  },
-  {
-    num: "03",
-    title: "Receba orientação.",
-    body: "Nossos especialistas explicam tudo: uso, carga, manutenção e cuidados.",
-  },
-  {
-    num: "04",
-    title: "Leve para casa.",
-    body: "Retire na loja ou receba em casa. Pronto para rodar desde o primeiro dia.",
-  },
+  { icon: Bike, title: "Escolha seu modelo", body: "Explore o catálogo e encontre a scooter ideal para o seu estilo de vida e orçamento." },
+  { icon: CalendarCheck, title: "Agende um test ride", body: "Venha até uma das lojas e experimente de graça antes de decidir." },
+  { icon: Headset, title: "Receba orientação", body: "Nossos especialistas explicam tudo: uso, carga, manutenção e cuidados." },
+  { icon: Truck, title: "Leve pra casa", body: "Retire na loja ou receba em casa. Pronta pra rodar desde o primeiro dia." },
 ];
 
 export default function ComoFunciona() {
+  const root = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.utils.toArray<HTMLElement>("[data-step]").forEach((el) => el.classList.add("is-active"));
+        return;
+      }
+      gsap.fromTo(
+        "[data-line]",
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "none",
+          scrollTrigger: { trigger: "[data-steps]", start: "top 60%", end: "bottom 60%", scrub: true },
+        }
+      );
+      gsap.utils.toArray<HTMLElement>("[data-step]").forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top 62%",
+          onEnter: () => el.classList.add("is-active"),
+          onLeaveBack: () => el.classList.remove("is-active"),
+        });
+      });
+    },
+    { scope: root }
+  );
+
   return (
-    <section id="como-funciona" className="py-14 md:py-24 px-5 md:px-14 lg:px-20 bg-white">
-      <div className="max-w-6xl mx-auto">
-
-        <Reveal className="mb-16">
-          <p className="text-[11px] font-semibold text-[#666] tracking-[3.5px] uppercase mb-4 font-body">
-            Como funciona
+    <section ref={root} id="como-funciona" className="relative rounded-t-[40px] bg-bone px-5 py-24 text-ink md:rounded-t-[64px] md:px-10 md:py-40">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-16 lg:grid-cols-12">
+        <div className="lg:col-span-6">
+          <p data-reveal="fade" className="mb-8 flex items-center gap-3 font-body text-[12px] font-semibold uppercase tracking-[0.25em] text-ink/40">
+            <span className="rounded-full bg-ink px-2 py-0.5 text-yellow">(04)</span> Como funciona
           </p>
-          <h2 className="text-[clamp(28px,4vw,50px)] font-extrabold text-[#111] tracking-[-0.04em] leading-[1.1] font-heading max-w-xl">
-            Começar nunca foi tão fácil<span style={{ color: "#F9E924" }}>.</span>
+          <h2
+            data-split
+            className="font-heading font-extrabold leading-[0.92] tracking-[-0.05em]"
+            style={{ fontSize: "clamp(44px, 5.4vw, 88px)" }}
+          >
+            Começar nunca foi tão fácil.
           </h2>
-        </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-0">
-          {passos.map((p, i) => (
-            <Reveal key={i} delay={i * 90}>
-              <div className="py-10 border-b border-[#f0f0ee] flex items-start gap-6">
-                <div
-                  className="font-heading font-black leading-none shrink-0 select-none"
-                  style={{
-                    fontSize: "clamp(48px, 6vw, 80px)",
-                    color: "#F9E924",
-                    letterSpacing: "-0.06em",
-                  }}
-                  aria-hidden="true"
-                >
-                  {p.num}
-                </div>
-                <div className="pt-2">
-                  <h3 className="text-[17px] font-bold text-[#111] mb-2.5 tracking-[-0.03em] font-heading">
-                    {p.title}
-                  </h3>
-                  <p className="text-[14px] text-[#777] leading-[1.75] font-body">
-                    {p.body}
-                  </p>
-                </div>
+          <ol data-steps className="relative mt-16 flex flex-col gap-14 pl-16 md:pl-20">
+            <span className="absolute bottom-2 left-[23px] top-2 w-[2px] bg-ink/10 md:left-[27px]" aria-hidden="true" />
+            <span data-line className="absolute bottom-2 left-[23px] top-2 w-[2px] origin-top bg-ink md:left-[27px]" aria-hidden="true" />
+            {passos.map(({ icon: Icon, title, body }, i) => (
+              <li key={title} data-step className="group/step relative">
+                <span className="absolute -left-16 top-0 flex h-12 w-12 items-center justify-center rounded-full border-2 border-ink/15 bg-bone text-ink/30 transition-all duration-700 group-[.is-active]/step:border-ink group-[.is-active]/step:bg-yellow group-[.is-active]/step:text-ink md:-left-20 md:h-14 md:w-14">
+                  <Icon size={22} strokeWidth={1.75} />
+                </span>
+                <p className="font-body text-[12px] font-semibold uppercase tracking-[0.2em] text-ink/35">Passo 0{i + 1}</p>
+                <h3 className="mt-2 font-heading text-[clamp(26px,2.6vw,38px)] font-extrabold leading-none tracking-[-0.04em] text-ink/30 transition-colors duration-700 group-[.is-active]/step:text-ink">
+                  {title}
+                </h3>
+                <p className="mt-3 max-w-[440px] font-body text-[15px] leading-relaxed text-ink/55">{body}</p>
+              </li>
+            ))}
+          </ol>
+
+          <div data-reveal="up" className="mt-16">
+            <Button href={WA_RIDE} external variant="dark">
+              Agendar meu test ride
+            </Button>
+          </div>
+        </div>
+
+        <div className="hidden lg:col-span-6 lg:block">
+          <div className="sticky top-28">
+            <div data-reveal="clip" className="relative aspect-[4/5] overflow-hidden rounded-[32px]">
+              <div data-parallax="-16" className="absolute -inset-y-[10%] inset-x-0">
+                <Image src="/sobre-moto.png" alt="Scooter EcoBike com a cidade ao fundo" fill sizes="45vw" className="object-cover" style={{ objectPosition: "55% center" }} />
               </div>
-            </Reveal>
-          ))}
+              <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-2xl bg-ink/70 p-5 text-bone backdrop-blur-xl">
+                <div>
+                  <p className="font-heading text-[20px] font-bold tracking-[-0.03em]">4 passos simples</p>
+                  <p className="font-body text-[13px] text-bone/55">Do catálogo até sair rodando.</p>
+                </div>
+                <span className="font-heading text-[44px] font-extrabold leading-none tracking-[-0.05em] text-yellow">04</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

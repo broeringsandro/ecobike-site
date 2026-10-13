@@ -1,122 +1,221 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { navLinks, WA_GERAL, INSTAGRAM, unidades } from "@/lib/constants";
+import { WhatsappIcon, InstagramIcon } from "./icons";
+import Magnetic from "./Magnetic";
 
-const navLinks = [
-  { label: "Produtos",   href: "#produtos" },
-  { label: "Vantagens",  href: "#beneficios" },
-  { label: "Unidades",   href: "#unidades" },
-  { label: "Sobre",      href: "#sobre" },
-  { label: "FAQ",        href: "#faq" },
-];
+function go(href: string) {
+  const lenis = window.__lenis;
+  if (lenis) {
+    lenis.start();
+    lenis.scrollTo(href, { offset: -20, duration: 1.6 });
+  } else {
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+  }
+}
 
-const WA =
-  "https://wa.me/5548984558493?text=Ol%C3%A1!%20Tenho%20interesse%20em%20conhecer%20as%20scooters%20da%20EcoBike.";
+/** Text that rolls up on hover */
+function RollText({ children }: { children: string }) {
+  return (
+    <span className="relative block overflow-hidden leading-[1.2]">
+      <span className="block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full">
+        {children}
+      </span>
+      <span
+        className="absolute left-0 top-full block text-yellow transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-full"
+        aria-hidden="true"
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
 
 export default function Nav() {
   const [hidden, setHidden] = useState(false);
-  const [atTop, setAtTop] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const lastY = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const tl = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
     const fn = () => {
       const y = window.scrollY;
-      setAtTop(y < 48);
-      if (y > lastY.current && y > 80) {
-        setHidden(true);
-      } else if (y < lastY.current) {
-        setHidden(false);
-      }
+      setScrolled(y > 40);
+      if (y > lastY.current && y > 200) setHidden(true);
+      else if (y < lastY.current) setHidden(false);
       lastY.current = y;
     };
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-light ${
-        hidden ? "-translate-y-full" : "translate-y-0"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-[64px] flex items-center justify-between gap-8">
-        <a href="#" aria-label="EcoBike" className="shrink-0">
-          <Image
-            src="/logo.svg"
-            alt="EcoBike"
-            width={110}
-            height={34}
-            priority
-            className="h-6 w-auto invert"
-          />
-        </a>
+  // Entrance after hero intro
+  useGSAP(
+    () => {
+      gsap.from(headerRef.current, { yPercent: -100, opacity: 0, duration: 1.2, ease: "expo.out", delay: 1.9 });
+    },
+    { scope: headerRef }
+  );
 
-        <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-          {navLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-[#111]/55 hover:text-[#111] text-[13px] font-medium tracking-[-0.01em] transition-colors whitespace-nowrap font-body px-4 py-1.5 rounded-full hover:bg-[#111]/[0.05]"
+  // Fullscreen menu timeline
+  useGSAP(
+    () => {
+      const m = menuRef.current;
+      if (!m) return;
+      tl.current = gsap
+        .timeline({ paused: true })
+        .set(m, { display: "flex" })
+        .fromTo(m, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "expo.inOut" })
+        .from(m.querySelectorAll("[data-menu-item]"), { yPercent: 110, duration: 0.8, stagger: 0.05, ease: "expo.out" }, "-=0.35")
+        .from(m.querySelectorAll("[data-menu-foot]"), { opacity: 0, y: 20, duration: 0.6, stagger: 0.05 }, "-=0.6");
+    },
+    { scope: menuRef }
+  );
+
+  useEffect(() => {
+    if (!tl.current) return;
+    if (open) {
+      window.__lenis?.stop();
+      tl.current.timeScale(1).play();
+    } else {
+      window.__lenis?.start();
+      tl.current.timeScale(1.6).reverse();
+    }
+  }, [open]);
+
+  const solid = scrolled && !open;
+
+  return (
+    <>
+      <header
+        ref={headerRef}
+        className={`fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color] duration-500 ${
+          hidden && !open ? "-translate-y-full" : "translate-y-0"
+        } ${solid ? "bg-ink/70 backdrop-blur-xl border-b border-white/[0.06]" : "border-b border-transparent"}`}
+      >
+        <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between gap-8 px-5 md:px-10">
+          <a
+            href="#top"
+            aria-label="EcoBike, voltar ao topo"
+            className="shrink-0"
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen(false);
+              go("#top");
+            }}
+          >
+            <Image src="/logo.svg" alt="EcoBike" width={120} height={37} className="h-7 w-auto" preload />
+          </a>
+
+          <nav className="hidden flex-1 items-center justify-center gap-8 lg:flex" aria-label="Principal">
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} className="group text-[13px] font-medium text-bone/70 hover:text-bone font-body">
+                <RollText>{l.label}</RollText>
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <Magnetic className="hidden md:inline-block">
+              <a
+                href={WA_GERAL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full bg-yellow py-2.5 pl-4 pr-5 text-[13px] font-semibold text-ink font-body transition-[filter] hover:brightness-95"
+              >
+                <WhatsappIcon size={18} />
+                Falar no WhatsApp
+              </a>
+            </Magnetic>
+
+            <button
+              className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/15 lg:hidden"
+              aria-label={open ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((o) => !o)}
             >
-              {l.label}
-            </a>
+              <span
+                className={`absolute h-[1.5px] w-5 bg-bone transition-transform duration-500 ${open ? "rotate-45" : "-translate-y-[4px]"}`}
+              />
+              <span
+                className={`absolute h-[1.5px] w-5 bg-bone transition-transform duration-500 ${open ? "-rotate-45" : "translate-y-[4px]"}`}
+              />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Fullscreen mobile menu */}
+      <div
+        ref={menuRef}
+        className="fixed inset-0 z-40 hidden flex-col justify-between bg-ink px-5 pb-8 pt-28 md:px-10 lg:!hidden"
+        aria-hidden={!open}
+        data-lenis-prevent
+      >
+        <nav className="flex flex-col gap-1" aria-label="Menu">
+          {navLinks.map((l, i) => (
+            <div key={l.href} className="overflow-hidden">
+              <a
+                data-menu-item
+                href={l.href}
+                tabIndex={open ? 0 : -1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpen(false);
+                  setTimeout(() => go(l.href), 450);
+                }}
+                className="flex items-baseline gap-4 py-1 font-heading text-[clamp(40px,11vw,72px)] font-extrabold leading-[1.05] tracking-[-0.04em] text-bone active:text-yellow"
+              >
+                <span className="font-body text-[12px] font-medium tracking-normal text-bone/30">
+                  0{i + 1}
+                </span>
+                {l.label}
+              </a>
+            </div>
           ))}
         </nav>
 
-        <a
-          href={WA}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Falar no WhatsApp"
-          className="hidden md:flex w-9 h-9 rounded-full bg-[#111] items-center justify-center hover:bg-[#333] transition-colors shrink-0"
-        >
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="white" aria-hidden="true">
-            <path d="M10 1.667C5.398 1.667 1.667 5.398 1.667 10c0 1.497.41 2.9 1.126 4.1L1.667 18.333l4.386-1.092A8.282 8.282 0 0 0 10 18.333c4.602 0 8.333-3.731 8.333-8.333S14.602 1.667 10 1.667z" />
-          </svg>
-        </a>
-
-        <button
-          className="lg:hidden p-1.5 flex flex-col gap-[5px]"
-          aria-label="Menu"
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          <span className={`block w-5 h-[1.5px] bg-[#111] transition-all ${open ? "rotate-45 translate-y-[6.5px]" : ""}`} />
-          <span className={`block w-5 h-[1.5px] bg-[#111] transition-all ${open ? "opacity-0" : ""}`} />
-          <span className={`block w-5 h-[1.5px] bg-[#111] transition-all ${open ? "-rotate-45 -translate-y-[6.5px]" : ""}`} />
-        </button>
-      </div>
-
-      <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ${
-          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-        style={{ background: "rgba(239,239,237,0.97)", backdropFilter: "blur(24px)" }}
-      >
-        <div className="px-6 py-5 flex flex-col gap-3 border-t border-[#111]/[0.07]">
-          {navLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="text-[#111]/65 hover:text-[#111] text-[14px] font-medium py-1 font-body"
-            >
-              {l.label}
-            </a>
-          ))}
+        <div className="flex flex-col gap-6">
           <a
-            href={WA}
+            data-menu-foot
+            href={WA_GERAL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-            className="mt-2 bg-[#111] text-white text-[13px] font-semibold px-5 py-3.5 rounded-full text-center font-body"
+            tabIndex={open ? 0 : -1}
+            className="flex items-center justify-between rounded-2xl bg-yellow px-6 py-5 text-[15px] font-semibold text-ink font-body"
           >
-            Falar no WhatsApp
+            <span className="flex items-center gap-3">
+              <WhatsappIcon size={20} />
+              Falar no WhatsApp
+            </span>
+            <ArrowUpRight size={20} />
           </a>
+          <div data-menu-foot className="flex items-end justify-between gap-6 text-[12px] leading-relaxed text-bone/45 font-body">
+            <div>
+              {unidades.map((u) => (
+                <p key={u.cidade}>{u.cidade}</p>
+              ))}
+            </div>
+            <a
+              href={INSTAGRAM}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={open ? 0 : -1}
+              aria-label="Instagram da EcoBike"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-bone"
+            >
+              <InstagramIcon size={18} />
+            </a>
+          </div>
         </div>
       </div>
-    </header>
+    </>
   );
 }
