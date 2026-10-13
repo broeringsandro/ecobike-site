@@ -73,9 +73,16 @@ export default function Beneficios() {
               data-ring
               className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/20 md:h-[640px] md:w-[640px]"
             />
-            <div className="absolute inset-x-4 bottom-4 top-16 md:inset-x-10">
-              <div data-parallax="-12" className="relative h-full w-full">
-                <Image src="/bikeguidon-cut.png" alt="Detalhe do guidão de uma scooter elétrica EcoBike" fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-contain object-center scale-110" />
+            {/* Photo is cropped at the bottom, so it sits flush with the card edge */}
+            <div className="absolute inset-x-0 bottom-0 top-20 md:top-16">
+              <div data-reveal="up" className="relative h-full w-full">
+                <Image
+                  src="/bikeguidon-cut.png"
+                  alt="Detalhe do guidão de uma scooter elétrica EcoBike"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="object-contain object-bottom [mask-image:linear-gradient(to_top,transparent_0%,black_14%)]"
+                />
               </div>
             </div>
             <div className="absolute left-6 top-6 flex flex-wrap gap-2 md:left-8 md:top-8">
